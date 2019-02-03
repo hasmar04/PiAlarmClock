@@ -26,7 +26,7 @@ import os.path
 import pathlib2 as pathlib
 import pygame
 import time # Added
-import vlc # Added
+import vlc # Added, Requires VLC to be installed in environment
 
 import google.oauth2.credentials
 
