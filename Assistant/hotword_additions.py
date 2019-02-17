@@ -27,6 +27,7 @@ import pathlib2 as pathlib
 import pygame
 import time # Added
 import vlc # Added, Requires VLC to be installed in environment
+import subprocess # Added
 
 import google.oauth2.credentials
 
@@ -37,7 +38,7 @@ from google.assistant.library.device_helpers import register_device
 
 url = 'radio_stream_url' # Radio Stream URL. MUST BE DIRECT LINK, NOT TUNEIN ETC.
 
-instance = vlc.Instance('--input-repeat=-1', '--fullscreen') # Added, VLC setup
+instance = vlc.Instance('--input-repeat=-1', '--fullscreen', '--stop-time', '7200') # Added, VLC setup, stop-time in seconds
 player=instance.media_player_new() # Added
 
 try:
@@ -69,7 +70,7 @@ def process_event(event):
         player.stop() #Added all below
         pygame.mixer.init()
         pygame.mixer.music.load('/home/pi/assist_sound2.mp3')
-        pygame.mixer.music.set_volume(5)
+        pygame.mixer.music.set_volume(2)
         pygame.mixer.music.play()
         time.sleep(1)
         pygame.mixer.quit() # To here
@@ -83,11 +84,17 @@ def process_event(event):
         for command, params in event.actions:
             print('Do command', command, 'with params', str(params))
             
-            if command == "com.example.commands.RadioPlay": # Added to run when receives RadioPlay command (radioplay.json)
-                number = int( params['number'] )
+            if command == "com.example.commands.RadioStart": #Added all below
+                channel = int( params['channel'] )
+                volume = int( params['volume'] )
                 media=instance.media_new(url)
                 player.set_media(media)
+                print(channel)
+                print(volume)
                 player.play()
+                print("Started Successfully")
+                time.sleep(3)
+                subprocess.check_call("./volume.sh '%s'" % str(volume),   shell=True) #requires volume.sh script in home
             
             if command == "com.example.commands.RadioStop": # Added, but RadioStop does not currently trigger it
                 player.stop()
@@ -95,6 +102,9 @@ def process_event(event):
     if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
         print()
     print(event)
+    
+    if event.type == EventType.ON_ALERT_STARTED: # Added, does not fix alarms crashing!!
+        player.stop()
 
 def main():
     parser = argparse.ArgumentParser(
