@@ -1,0 +1,60 @@
+{
+    "manifest": {
+        "displayName": "Radio Start",
+        "invocationName": "Radio Start",
+        "category": "PRODUCTIVITY"
+    },
+    "actions": [
+        {
+            "name": "com.example.actions.RadioStart",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.example.intents.RadioStart",
+                "parameters": [
+                    {
+                        "name": "channel",
+                        "type": "SchemaOrg_Number"
+                    },
+                    {
+                        "name": "volume",
+                        "type": "SchemaOrg_Number"
+                    }
+                ],
+                "trigger": {
+                    "queryPatterns": [
+                        "custom radio $SchemaOrg_Number:channel at volume $SchemaOrg_Number:volume",
+                        "custom radio $SchemaOrg_Number:channel volume $SchemaOrg_Number:volume"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Playing radio $channel at $volume percent volume"
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.example.commands.RadioStart",
+                                    "params": {
+                                        "channel": "$channel",
+                                        "volume": "$volume"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}
