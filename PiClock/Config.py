@@ -5,7 +5,7 @@ from PyQt4.QtGui import QColor
 # LOCATION(S)
 # Further radar configuration (zoom, marker location) can be
 # completed under the RADAR section
-primary_coordinates = -27.574413, 152.883959  # Change to your Lat/Lon
+primary_coordinates = 0, 0  # Change to your Lat/Lon
 
 location = LatLng(primary_coordinates[0], primary_coordinates[1])
 primary_location = LatLng(primary_coordinates[0], primary_coordinates[1])
